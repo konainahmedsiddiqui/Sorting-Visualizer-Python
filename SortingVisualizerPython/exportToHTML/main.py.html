@@ -1,0 +1,362 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+.s4 { color: #6897bb;}
+.s5 { color: #629755; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">from </span><span class="s1">tkinter </span><span class="s0">import </span><span class="s1">*</span>
+<span class="s0">from </span><span class="s1">tkinter </span><span class="s0">import </span><span class="s1">ttk</span><span class="s0">, </span><span class="s1">messagebox</span>
+<span class="s0">from </span><span class="s1">ttkbootstrap </span><span class="s0">import </span><span class="s1">*</span>
+<span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+<span class="s0">import </span><span class="s1">time</span>
+
+
+<span class="s0">class </span><span class="s1">window:</span>
+    <span class="s1">st = {</span><span class="s2">'bubble'</span><span class="s1">: </span><span class="s0">False, </span><span class="s2">'insertion'</span><span class="s1">: </span><span class="s0">False, </span><span class="s2">'selection'</span><span class="s1">: </span><span class="s0">False,</span>
+          <span class="s2">'merge'</span><span class="s1">: </span><span class="s0">False, </span><span class="s2">'quick'</span><span class="s1">: </span><span class="s0">False</span><span class="s1">}  </span><span class="s3"># to select the sorts</span>
+
+    <span class="s0">def </span><span class="s1">__init__(self</span><span class="s0">, </span><span class="s1">root</span><span class="s0">, </span><span class="s1">title) -&gt; </span><span class="s0">None</span><span class="s1">:</span>
+        <span class="s1">self.root = root</span>
+        <span class="s1">self.root.title(title)</span>
+        <span class="s1">self.root.resizable(width=</span><span class="s0">False, </span><span class="s1">height=</span><span class="s0">False</span><span class="s1">)</span>
+        <span class="s1">Label(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Sorting Algorithm Visualizer'</span><span class="s1">).grid(</span>
+            <span class="s1">row=</span><span class="s4">0</span><span class="s0">, </span><span class="s1">columnspan=</span><span class="s4">6</span><span class="s1">)</span>
+        <span class="s3">#  Buttons</span>
+        <span class="s1">self.bs = ttk.Button(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Bubble Sort'</span><span class="s0">, </span><span class="s1">style=</span><span class="s2">'info.TButton'</span><span class="s0">, </span><span class="s1">padding=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">15</span><span class="s0">,</span>
+                             <span class="s1">command=self.bubble)</span>
+        <span class="s1">self.bs.grid(column=</span><span class="s4">0</span><span class="s0">, </span><span class="s1">row=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">5</span><span class="s1">)</span>
+        <span class="s1">self.Is = ttk.Button(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Insertion Sort'</span><span class="s0">, </span><span class="s1">style=</span><span class="s2">'info.TButton'</span><span class="s0">, </span><span class="s1">padding=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">15</span><span class="s0">,</span>
+                             <span class="s1">command=self.insertion)</span>
+        <span class="s1">self.Is.grid(column=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">row=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">5</span><span class="s1">)</span>
+        <span class="s1">self.ss = ttk.Button(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Selection Sort'</span><span class="s0">, </span><span class="s1">style=</span><span class="s2">'info.TButton'</span><span class="s0">, </span><span class="s1">padding=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">15</span><span class="s0">,</span>
+                             <span class="s1">command=self.selection)</span>
+        <span class="s1">self.ss.grid(column=</span><span class="s4">2</span><span class="s0">, </span><span class="s1">row=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">5</span><span class="s1">)</span>
+        <span class="s1">self.ms = ttk.Button(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Merge Sort'</span><span class="s0">, </span><span class="s1">style=</span><span class="s2">'info.TButton'</span><span class="s0">, </span><span class="s1">padding=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">15</span><span class="s0">,</span>
+                             <span class="s1">command=self.merge)</span>
+        <span class="s1">self.ms.grid(column=</span><span class="s4">3</span><span class="s0">, </span><span class="s1">row=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">5</span><span class="s1">)</span>
+        <span class="s1">self.qs = ttk.Button(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Quick Sort'</span><span class="s0">, </span><span class="s1">style=</span><span class="s2">'info.TButton'</span><span class="s0">, </span><span class="s1">padding=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">15</span><span class="s0">,</span>
+                             <span class="s1">command=self.quick)</span>
+        <span class="s1">self.qs.grid(column=</span><span class="s4">4</span><span class="s0">, </span><span class="s1">row=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">5</span><span class="s1">)</span>
+        <span class="s1">self.start = ttk.Button(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Start'</span><span class="s0">, </span><span class="s1">padding=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">15</span><span class="s0">,</span>
+                                <span class="s1">command=self.start)</span>
+        <span class="s1">self.start.grid(column=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">row=</span><span class="s4">2</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">5</span><span class="s1">)</span>
+
+        <span class="s1">ttk.Label(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Speed &amp; Array Size:'</span><span class="s1">).grid(row=</span><span class="s4">2</span><span class="s0">, </span><span class="s1">column=</span><span class="s4">0</span><span class="s1">)</span>
+        <span class="s1">self.arraysize = ttk.Scale(self.root</span><span class="s0">, </span><span class="s1">from_=</span><span class="s4">6</span><span class="s0">, </span><span class="s1">to=</span><span class="s4">120</span><span class="s0">, </span><span class="s1">length=</span><span class="s4">380</span><span class="s0">, </span><span class="s1">style=</span><span class="s2">'success.Horizontal.TScale'</span><span class="s0">, </span><span class="s1">value=</span><span class="s4">10</span><span class="s0">,</span>
+                                   <span class="s1">command=</span><span class="s0">lambda </span><span class="s1">x: self.slide_function())</span>
+        <span class="s1">self.arraysize.grid(row=</span><span class="s4">2</span><span class="s0">, </span><span class="s1">column=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">columnspan=</span><span class="s4">3</span><span class="s1">)</span>
+
+        <span class="s1">ttk.Button(self.root</span><span class="s0">, </span><span class="s1">text=</span><span class="s2">'Shuffle'</span><span class="s0">, </span><span class="s1">style=</span><span class="s2">'info.Outline.TButton'</span><span class="s0">, </span><span class="s1">padding=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">15</span><span class="s0">,</span>
+                   <span class="s1">command=self.shuffle).grid(column=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">row=</span><span class="s4">1</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">5</span><span class="s1">)</span>
+
+        <span class="s3">#    Canvas</span>
+        <span class="s1">self.canvas = Canvas(self.root</span><span class="s0">, </span><span class="s1">width=</span><span class="s4">800 </span><span class="s1">- </span><span class="s4">5</span><span class="s0">, </span><span class="s1">height=</span><span class="s4">400</span><span class="s0">, </span><span class="s1">highlightbackground=</span><span class="s2">&quot;dodgerblue&quot;</span><span class="s0">,</span>
+                             <span class="s1">highlightthickness=</span><span class="s4">2</span><span class="s0">,</span>
+                             <span class="s1">bg=</span><span class="s2">'black'</span><span class="s1">)</span>
+        <span class="s1">self.canvas.grid(row=</span><span class="s4">4</span><span class="s0">, </span><span class="s1">padx=</span><span class="s4">5</span><span class="s0">, </span><span class="s1">pady=</span><span class="s4">10</span><span class="s0">, </span><span class="s1">columnspan=</span><span class="s4">6</span><span class="s1">)</span>
+
+        <span class="s1">self.speed = </span><span class="s4">0.2</span>
+        <span class="s1">self.N = </span><span class="s4">10</span>
+        <span class="s1">self.colours = [</span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(self.N)]</span>
+        <span class="s1">N = self.N</span>
+        <span class="s1">self.data = np.linspace(</span><span class="s4">5</span><span class="s0">, </span><span class="s4">400</span><span class="s0">, </span><span class="s1">N</span><span class="s0">, </span><span class="s1">dtype=np.uint16)</span>
+        <span class="s1">np.random.shuffle(self.data)</span>
+        <span class="s1">self.display(N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">self.colours)</span>
+
+    <span class="s0">def </span><span class="s1">display(self</span><span class="s0">, </span><span class="s1">N: int</span><span class="s0">, </span><span class="s1">a: list</span><span class="s0">, </span><span class="s1">rong: list):</span>
+        <span class="s5">''' 
+        N = number of rectangles 
+        a = array of heights of rectangles 
+        rong = array of colours of each and every rectangle'''</span>
+
+        <span class="s1">self.canvas.delete(</span><span class="s2">'all'</span><span class="s1">)</span>
+        <span class="s1">width = (</span><span class="s4">1570</span><span class="s1">) / (</span><span class="s4">3 </span><span class="s1">* N - </span><span class="s4">1</span><span class="s1">)</span>
+        <span class="s1">gap = width / </span><span class="s4">2</span>
+
+        <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(N):</span>
+            <span class="s1">self.canvas.create_rectangle(</span><span class="s4">7 </span><span class="s1">+ i * width + i * gap</span><span class="s0">, </span><span class="s4">0</span><span class="s0">, </span><span class="s4">7 </span><span class="s1">+ (i + </span><span class="s4">1</span><span class="s1">) * width + i * gap</span><span class="s0">, </span><span class="s1">a[i]</span><span class="s0">, </span><span class="s1">fill=rong[i])</span>
+
+        <span class="s1">self.root.update_idletasks()</span>
+
+    <span class="s0">def </span><span class="s1">slide_function(self):</span>
+        <span class="s1">self.N = int(self.arraysize.get())</span>
+        <span class="s1">self.data = np.linspace(</span><span class="s4">5</span><span class="s0">, </span><span class="s4">400</span><span class="s0">, </span><span class="s1">self.N</span><span class="s0">, </span><span class="s1">dtype=np.uint16)</span>
+        <span class="s1">self.speed = </span><span class="s4">5 </span><span class="s1">/ self.arraysize.get()</span>
+        <span class="s1">self.colours = [</span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)]</span>
+        <span class="s1">self.shuffle()</span>
+
+    <span class="s0">def </span><span class="s1">shuffle(self):</span>
+        <span class="s1">self.canvas.delete(</span><span class="s2">'all'</span><span class="s1">)</span>
+        <span class="s1">self.data = np.linspace(</span><span class="s4">5</span><span class="s0">, </span><span class="s4">400</span><span class="s0">, </span><span class="s1">self.N</span><span class="s0">, </span><span class="s1">dtype=np.uint16)</span>
+        <span class="s1">np.random.shuffle(self.data)</span>
+        <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">self.colours)</span>
+
+    <span class="s3"># ---------------button selection of sorting algos---------------------------</span>
+    <span class="s0">def </span><span class="s1">bubble(self):</span>
+        <span class="s0">if </span><span class="s1">self.st[</span><span class="s2">'bubble'</span><span class="s1">] </span><span class="s0">is False</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'bubble'</span><span class="s1">] = </span><span class="s0">True</span>
+            <span class="s1">self.bs.config(style=</span><span class="s2">'success.TButton'</span><span class="s1">)</span>
+
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">self.st:</span>
+                <span class="s0">if </span><span class="s1">i != </span><span class="s2">'bubble'</span><span class="s1">:</span>
+                    <span class="s1">self.st[i] = </span><span class="s0">False</span>
+
+            <span class="s1">self.qs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.ms.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.ss.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.Is.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'bubble'</span><span class="s1">] = </span><span class="s0">False</span>
+            <span class="s1">self.bs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+    <span class="s0">def </span><span class="s1">merge(self):</span>
+        <span class="s0">if </span><span class="s1">self.st[</span><span class="s2">'merge'</span><span class="s1">] </span><span class="s0">is False</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'merge'</span><span class="s1">] = </span><span class="s0">True</span>
+            <span class="s1">self.ms.config(style=</span><span class="s2">'success.TButton'</span><span class="s1">)</span>
+
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">self.st:</span>
+                <span class="s0">if </span><span class="s1">i != </span><span class="s2">'merge'</span><span class="s1">:</span>
+                    <span class="s1">self.st[i] = </span><span class="s0">False</span>
+
+            <span class="s1">self.qs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.bs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.ss.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.Is.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'merge'</span><span class="s1">] = </span><span class="s0">False</span>
+            <span class="s1">self.ms.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+    <span class="s0">def </span><span class="s1">quick(self):</span>
+        <span class="s0">if </span><span class="s1">self.st[</span><span class="s2">'quick'</span><span class="s1">] </span><span class="s0">is False</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'quick'</span><span class="s1">] = </span><span class="s0">True</span>
+            <span class="s1">self.qs.config(style=</span><span class="s2">'success.TButton'</span><span class="s1">)</span>
+
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">self.st:</span>
+                <span class="s0">if </span><span class="s1">i != </span><span class="s2">'quick'</span><span class="s1">:</span>
+                    <span class="s1">self.st[i] = </span><span class="s0">False</span>
+
+            <span class="s1">self.ms.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.bs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.ss.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.Is.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'quick'</span><span class="s1">] = </span><span class="s0">False</span>
+            <span class="s1">self.qs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+    <span class="s0">def </span><span class="s1">selection(self):</span>
+        <span class="s0">if </span><span class="s1">self.st[</span><span class="s2">'selection'</span><span class="s1">] </span><span class="s0">is False</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'selection'</span><span class="s1">] = </span><span class="s0">True</span>
+            <span class="s1">self.ss.config(style=</span><span class="s2">'success.TButton'</span><span class="s1">)</span>
+
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">self.st:</span>
+                <span class="s0">if </span><span class="s1">i != </span><span class="s2">'selection'</span><span class="s1">:</span>
+                    <span class="s1">self.st[i] = </span><span class="s0">False</span>
+
+            <span class="s1">self.qs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.bs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.ms.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.Is.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'selection'</span><span class="s1">] = </span><span class="s0">False</span>
+            <span class="s1">self.ss.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+    <span class="s0">def </span><span class="s1">insertion(self):</span>
+        <span class="s0">if </span><span class="s1">self.st[</span><span class="s2">'insertion'</span><span class="s1">] </span><span class="s0">is False</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'insertion'</span><span class="s1">] = </span><span class="s0">True</span>
+            <span class="s1">self.Is.config(style=</span><span class="s2">'success.TButton'</span><span class="s1">)</span>
+
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">self.st:</span>
+                <span class="s0">if </span><span class="s1">i != </span><span class="s2">'insertion'</span><span class="s1">:</span>
+                    <span class="s1">self.st[i] = </span><span class="s0">False</span>
+            <span class="s1">self.qs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.bs.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.ss.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+            <span class="s1">self.ms.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">self.st[</span><span class="s2">'insertion'</span><span class="s1">] = </span><span class="s0">False</span>
+            <span class="s1">self.Is.config(style=</span><span class="s2">'info.TButton'</span><span class="s1">)</span>
+
+    <span class="s3"># -----------------------------------------------------------</span>
+    <span class="s0">def </span><span class="s1">start(self):</span>
+        <span class="s0">if </span><span class="s1">self.st[</span><span class="s2">'bubble'</span><span class="s1">] </span><span class="s0">is True</span><span class="s1">:</span>
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(self.N - </span><span class="s4">1</span><span class="s1">):</span>
+                <span class="s0">for </span><span class="s1">j </span><span class="s0">in </span><span class="s1">range(self.N - </span><span class="s4">1 </span><span class="s1">- i):</span>
+                    <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                 <span class="s1">[</span><span class="s2">'purple' </span><span class="s0">if </span><span class="s1">a == j </span><span class="s0">or </span><span class="s1">a == j + </span><span class="s4">1 </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &gt; self.N - </span><span class="s4">1 </span><span class="s1">- i </span><span class="s0">else </span><span class="s2">'dodgerblue'</span>
+                                  <span class="s0">for </span><span class="s1">a </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                    <span class="s1">time.sleep(self.speed)</span>
+                    <span class="s0">if </span><span class="s1">self.data[j] &gt; self.data[j + </span><span class="s4">1</span><span class="s1">]:</span>
+                        <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                     <span class="s1">[</span><span class="s2">'red' </span><span class="s0">if </span><span class="s1">a == j </span><span class="s0">or </span><span class="s1">a == j + </span><span class="s4">1 </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &gt; self.N - </span><span class="s4">1 </span><span class="s1">- i </span><span class="s0">else </span><span class="s2">'dodgerblue'</span>
+                                      <span class="s0">for </span><span class="s1">a </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                        <span class="s1">time.sleep(self.speed)</span>
+                        <span class="s1">self.data[j]</span><span class="s0">, </span><span class="s1">self.data[j + </span><span class="s4">1</span><span class="s1">] = self.data[j + </span><span class="s4">1</span><span class="s1">]</span><span class="s0">, </span><span class="s1">self.data[j]</span>
+                        <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span>
+                            <span class="s2">'lime' </span><span class="s0">if </span><span class="s1">a == j </span><span class="s0">or </span><span class="s1">a == j + </span><span class="s4">1 </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &gt; self.N - </span><span class="s4">1 </span><span class="s1">- i </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">a </span><span class="s0">in</span>
+                            <span class="s1">range(self.N)])</span>
+                        <span class="s1">time.sleep(self.speed)</span>
+            <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'lime' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+
+        <span class="s0">elif </span><span class="s1">self.st[</span><span class="s2">'insertion'</span><span class="s1">] </span><span class="s0">is True</span><span class="s1">:</span>
+            <span class="s0">for </span><span class="s1">j </span><span class="s0">in </span><span class="s1">range(</span><span class="s4">1</span><span class="s0">, </span><span class="s1">len(self.data)):</span>
+                <span class="s1">key = self.data[j]</span>
+                <span class="s1">i = j - </span><span class="s4">1</span>
+                <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                             <span class="s1">[</span><span class="s2">'purple' </span><span class="s0">if </span><span class="s1">a == i </span><span class="s0">or </span><span class="s1">a == i + </span><span class="s4">1 </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &lt;= j </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">a </span><span class="s0">in</span>
+                              <span class="s1">range(self.N)])</span>
+                <span class="s1">time.sleep(self.speed)</span>
+                <span class="s0">while </span><span class="s1">i &gt;= </span><span class="s4">0 </span><span class="s0">and </span><span class="s1">self.data[i] &gt; key:</span>
+                    <span class="s1">self.data[i + </span><span class="s4">1</span><span class="s1">] = self.data[i]</span>
+                    <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                 <span class="s1">[</span><span class="s2">'yellow' </span><span class="s0">if </span><span class="s1">a == i </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &lt;= j </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">a </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                    <span class="s1">time.sleep(self.speed)</span>
+                    <span class="s1">i -= </span><span class="s4">1</span>
+                <span class="s1">self.data[i + </span><span class="s4">1</span><span class="s1">] = key</span>
+            <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'lime' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+
+        <span class="s0">elif </span><span class="s1">self.st[</span><span class="s2">'selection'</span><span class="s1">] </span><span class="s0">is True</span><span class="s1">:</span>
+            <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(len(self.data) - </span><span class="s4">1</span><span class="s1">):</span>
+                <span class="s1">min_index = i</span>
+                <span class="s3"># loop to find the minimum element and its index</span>
+                <span class="s0">for </span><span class="s1">j </span><span class="s0">in </span><span class="s1">range(i + </span><span class="s4">1</span><span class="s0">, </span><span class="s1">len(self.data)):</span>
+                    <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                 <span class="s1">[</span><span class="s2">'yellow' </span><span class="s0">if </span><span class="s1">a == min_index </span><span class="s0">or </span><span class="s1">a == i </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &lt;= i </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">a </span><span class="s0">in</span>
+                                  <span class="s1">range(self.N)])</span>
+                    <span class="s1">time.sleep(self.speed)</span>
+                    <span class="s0">if </span><span class="s1">self.data[min_index] &gt; self.data[j]:</span>
+                        <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                     <span class="s1">[</span><span class="s2">'red' </span><span class="s0">if </span><span class="s1">a == min_index </span><span class="s0">or </span><span class="s1">a == j </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &lt;= i </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">a</span>
+                                      <span class="s0">in </span><span class="s1">range(self.N)])</span>
+                        <span class="s1">time.sleep(self.speed)</span>
+                        <span class="s1">min_index = j</span>
+                <span class="s0">if </span><span class="s1">min_index != i:</span>
+                    <span class="s1">self.data[i]</span><span class="s0">, </span><span class="s1">self.data[min_index] = self.data[min_index]</span><span class="s0">, </span><span class="s1">self.data[i]</span>
+                    <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                 <span class="s1">[</span><span class="s2">'lime' </span><span class="s0">if </span><span class="s1">a == min_index </span><span class="s0">or </span><span class="s1">a == i </span><span class="s0">else </span><span class="s2">'green' </span><span class="s0">if </span><span class="s1">a &lt;= i </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">a </span><span class="s0">in</span>
+                                  <span class="s1">range(self.N)])</span>
+                    <span class="s1">time.sleep(self.speed)</span>
+            <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'lime' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+
+
+        <span class="s0">elif </span><span class="s1">self.st[</span><span class="s2">'merge'</span><span class="s1">] </span><span class="s0">is True</span><span class="s1">:</span>
+            <span class="s1">self.mergesort(self.data</span><span class="s0">, </span><span class="s4">0</span><span class="s0">, </span><span class="s1">self.N - </span><span class="s4">1</span><span class="s1">)</span>
+            <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'lime' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+
+        <span class="s0">elif </span><span class="s1">self.st[</span><span class="s2">'quick'</span><span class="s1">] </span><span class="s0">is True</span><span class="s1">:</span>
+            <span class="s1">self.quicksort(self.data</span><span class="s0">, </span><span class="s4">0</span><span class="s0">, </span><span class="s1">self.N - </span><span class="s4">1</span><span class="s1">)</span>
+            <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'lime' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s3"># show messege box</span>
+            <span class="s1">messagebox.showerror(</span><span class="s2">&quot;Algorithm Visualizer&quot;</span><span class="s0">, </span><span class="s2">&quot;You didn't select any sorting algorithm&quot;</span><span class="s1">)</span>
+
+    <span class="s3"># -----------merge sort algo-------------------------------------</span>
+
+    <span class="s0">def </span><span class="s1">mergesort(self</span><span class="s0">, </span><span class="s1">a</span><span class="s0">, </span><span class="s1">front</span><span class="s0">, </span><span class="s1">last):</span>
+        <span class="s0">if </span><span class="s1">front &lt; last:</span>
+            <span class="s1">mid = (front + last) // </span><span class="s4">2</span>
+
+            <span class="s1">self.mergesort(a</span><span class="s0">, </span><span class="s1">front</span><span class="s0">, </span><span class="s1">mid)</span>
+            <span class="s1">self.mergesort(a</span><span class="s0">, </span><span class="s1">mid + </span><span class="s4">1</span><span class="s0">, </span><span class="s1">last)</span>
+
+            <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+
+            <span class="s1">rj = mid + </span><span class="s4">1</span>
+            <span class="s0">if </span><span class="s1">a[mid] &lt;= a[mid + </span><span class="s4">1</span><span class="s1">]:</span>
+                <span class="s0">return</span>
+
+            <span class="s0">while </span><span class="s1">front &lt;= mid </span><span class="s0">and </span><span class="s1">rj &lt;= last:</span>
+                <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                             <span class="s1">[</span><span class="s2">'yellow' </span><span class="s0">if </span><span class="s1">x == front </span><span class="s0">or </span><span class="s1">x == rj </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                <span class="s1">time.sleep(self.speed)</span>
+                <span class="s0">if </span><span class="s1">a[front] &lt;= a[rj]:</span>
+                    <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                 <span class="s1">[</span><span class="s2">'lime' </span><span class="s0">if </span><span class="s1">x == front </span><span class="s0">or </span><span class="s1">x == rj </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                    <span class="s1">time.sleep(self.speed)</span>
+                    <span class="s1">front += </span><span class="s4">1</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                 <span class="s1">[</span><span class="s2">'red' </span><span class="s0">if </span><span class="s1">x == front </span><span class="s0">or </span><span class="s1">x == rj </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                    <span class="s1">time.sleep(self.speed)</span>
+                    <span class="s1">temp = a[rj]</span>
+                    <span class="s1">i = rj</span>
+                    <span class="s0">while </span><span class="s1">i != front:</span>
+                        <span class="s1">a[i] = a[i - </span><span class="s4">1</span><span class="s1">]</span>
+                        <span class="s1">i -= </span><span class="s4">1</span>
+                    <span class="s1">a[front] = temp</span>
+                    <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                                 <span class="s1">[</span><span class="s2">'lime' </span><span class="s0">if </span><span class="s1">x == front </span><span class="s0">or </span><span class="s1">x == rj </span><span class="s0">else </span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                    <span class="s1">time.sleep(self.speed)</span>
+
+                    <span class="s1">front += </span><span class="s4">1</span>
+                    <span class="s1">mid += </span><span class="s4">1</span>
+                    <span class="s1">rj += </span><span class="s4">1</span>
+
+            <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'dodgerblue' </span><span class="s0">for </span><span class="s1">_ </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+            <span class="s1">time.sleep(self.speed)</span>
+
+    <span class="s3"># -----------------------------quick sort algo---------------</span>
+
+    <span class="s0">def </span><span class="s1">partition(self</span><span class="s0">, </span><span class="s1">a</span><span class="s0">, </span><span class="s1">i</span><span class="s0">, </span><span class="s1">j):</span>
+        <span class="s5">''' 
+        a -&gt; is  the array 
+        i -&gt; index from front 
+        j -&gt; index from back'''</span>
+
+        <span class="s1">l = i  </span><span class="s3"># left index</span>
+
+        <span class="s1">pivot = a[i]</span>
+        <span class="s1">piv_index = i</span>
+
+        <span class="s0">while </span><span class="s1">i &lt; j:</span>
+            <span class="s0">while </span><span class="s1">i &lt; len(a) </span><span class="s0">and </span><span class="s1">a[i] &lt;= pivot:</span>
+                <span class="s1">i += </span><span class="s4">1</span>
+                <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">,</span>
+                             <span class="s1">[</span><span class="s2">'purple' </span><span class="s0">if </span><span class="s1">x == piv_index </span><span class="s0">else </span><span class="s2">'yellow' </span><span class="s0">if </span><span class="s1">x == i </span><span class="s0">else </span><span class="s2">&quot;dodgerblue&quot; </span><span class="s0">for </span><span class="s1">x </span><span class="s0">in</span>
+                              <span class="s1">range(self.N)])</span>
+                <span class="s1">time.sleep(self.speed)</span>
+            <span class="s0">while </span><span class="s1">a[j] &gt; pivot:</span>
+                <span class="s1">j -= </span><span class="s4">1</span>
+            <span class="s0">if </span><span class="s1">i &lt; j:</span>
+                <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'red' </span><span class="s0">if </span><span class="s1">x == i </span><span class="s0">or </span><span class="s1">x == j </span><span class="s0">else </span><span class="s2">&quot;dodgerblue&quot; </span><span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                <span class="s1">time.sleep(self.speed)</span>
+                <span class="s1">a[i]</span><span class="s0">, </span><span class="s1">a[j] = a[j]</span><span class="s0">, </span><span class="s1">a[i]</span>
+                <span class="s1">self.display(self.N</span><span class="s0">, </span><span class="s1">self.data</span><span class="s0">, </span><span class="s1">[</span><span class="s2">'lime' </span><span class="s0">if </span><span class="s1">x == i </span><span class="s0">or </span><span class="s1">x == j </span><span class="s0">else </span><span class="s2">&quot;dodgerblue&quot; </span><span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">range(self.N)])</span>
+                <span class="s1">time.sleep(self.speed)</span>
+        <span class="s1">a[j]</span><span class="s0">, </span><span class="s1">a[l] = a[l]</span><span class="s0">, </span><span class="s1">a[j]</span>
+        <span class="s0">return </span><span class="s1">j</span>
+
+    <span class="s0">def </span><span class="s1">quicksort(self</span><span class="s0">, </span><span class="s1">a</span><span class="s0">, </span><span class="s1">i</span><span class="s0">, </span><span class="s1">j):</span>
+        <span class="s0">if </span><span class="s1">i &lt; j:</span>
+            <span class="s1">x = self.partition(a</span><span class="s0">, </span><span class="s1">i</span><span class="s0">, </span><span class="s1">j)</span>
+
+            <span class="s1">self.quicksort(a</span><span class="s0">, </span><span class="s1">i</span><span class="s0">, </span><span class="s1">x - </span><span class="s4">1</span><span class="s1">)</span>
+            <span class="s1">self.quicksort(a</span><span class="s0">, </span><span class="s1">x + </span><span class="s4">1</span><span class="s0">, </span><span class="s1">j)</span>
+    <span class="s3"># --------------------------------------------------</span>
+
+
+<span class="s0">if </span><span class="s1">__name__ == </span><span class="s2">'__main__'</span><span class="s1">:</span>
+    <span class="s1">win = Style(theme=</span><span class="s2">'darkly'</span><span class="s1">).master</span>
+    <span class="s1">obj = window(win</span><span class="s0">, </span><span class="s2">'Sorting Algorithm Visualizer'</span><span class="s1">)</span>
+
+    <span class="s1">win.mainloop()</span></pre>
+</body>
+</html>
